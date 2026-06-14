@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero" style="text-align:left;padding:18px 0 6px">
+  <span class="eyebrow">{{ result.object_type }}</span>
+  <h1 class="display" style="font-size:clamp(28px,4vw,42px);margin-top:18px">{{ result.object_name }}</h1>
+  <p class="run-meta" style="margin-top:14px">RUN <code>{{ search_run_id }}</code></p>
+</div>
+
+{% if result.anomalies %}
+<div class="warning">⚠ Anomalies: {{ result.anomalies|join(", ") }}</div>
+{% endif %}
+
+<h2 class="section-title">Full distribution</h2>
+<div class="window">
+  <div class="window-chrome">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span>{{ result.object_name }} · {{ result.rows|length }} buckets</span>
+  </div>
+  <table>
+    <thead>
+      {% if result.rows %}
+      <tr>
+      {% for key in result.rows[0].keys() %}
+        <th>{{ key }}</th>
+      {% endfor %}
+      </tr>
+      {% endif %}
+    </thead>
+    <tbody>
+      {% for row in result.rows %}
+      <tr>
+        {% for value in row.values() %}
+        <td class="num">{{ value }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="toolbar" style="margin-top:24px">
+  <a class="chip-link" href="/">↺ New search</a>
+</div>
+{% endblock %}

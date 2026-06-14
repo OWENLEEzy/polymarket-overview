@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero" style="text-align:left;padding:18px 0 6px">
+  <span class="eyebrow">✎ Review</span>
+  <h1 class="display" style="font-size:clamp(28px,4vw,42px);margin-top:18px">Structured markets</h1>
+  <p class="run-meta" style="margin-top:14px">RUN <code>{{ search_run_id }}</code></p>
+</div>
+
+<div class="toolbar">
+  <a class="chip-link is-teal" href="/summary/{{ search_run_id }}">◆ Generate overview</a>
+  <a class="chip-link" href="/">↺ New search</a>
+</div>
+
+<h2 class="section-title">Effective objects</h2>
+<div class="window">
+  <div class="window-chrome">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span>objects · {{ objects|length }}</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Object</th><th>Type</th><th class="num">Markets</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for object in objects %}
+      <tr>
+        <td><strong>{{ object.object_name }}</strong></td>
+        <td>{{ object.object_type }}</td>
+        <td class="num">{{ object.market_ids|length }}</td>
+        <td>
+          <form method="post" action="/overview">
+            <input type="hidden" name="search_run_id" value="{{ search_run_id }}">
+            <input type="hidden" name="object_id" value="{{ object.object_id or object.object_name }}">
+            <button class="btn btn-sm" type="submit">Aggregate</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="section-title">Edit &amp; save</h2>
+<form method="post" action="/review/{{ search_run_id }}">
+  <div class="window">
+    <div class="window-chrome">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span>{{ markets|length }} rows · editable</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>On</th><th>Object</th><th>Type</th><th>Question</th>
+          <th>Operator</th><th>Threshold</th><th>Category</th><th class="num">Prob.</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for market in markets %}
+        <tr>
+          <td><input type="checkbox" name="include_{{ loop.index0 }}" {% if market.include %}checked{% endif %}></td>
+          <td>
+            <input name="object_name_{{ loop.index0 }}" value="{{ market.object_name }}" style="width:140px">
+            <input type="hidden" name="event_title_{{ loop.index0 }}" value="{{ market.event_title }}">
+            <input type="hidden" name="resolution_date_{{ loop.index0 }}" value="{{ market.resolution_date or '' }}">
+          </td>
+          <td>
+            <select name="object_type_{{ loop.index0 }}">
+              {% for object_type in object_types %}
+              <option value="{{ object_type }}" {% if market.object_type == object_type %}selected{% endif %}>{{ object_type }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>{{ market.question }}</td>
+          <td>
+            <select name="operator_{{ loop.index0 }}">
+              {% for operator in operators %}
+              <option value="{{ operator }}" {% if market.operator == operator %}selected{% endif %}>{{ operator }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <input class="narrow" name="threshold_value_{{ loop.index0 }}" value="{{ market.threshold_value if market.threshold_value is not none else '' }}">
+            <input class="unit" name="threshold_unit_{{ loop.index0 }}" value="{{ market.threshold_unit or '' }}">
+          </td>
+          <td><input name="category_value_{{ loop.index0 }}" value="{{ market.category_value or '' }}" style="width:120px"></td>
+          <td class="num">{{ "%.3f"|format(market.probability) }} <span class="muted">{{ market.probability_source }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="toolbar" style="margin-top:18px">
+    <button class="btn btn-primary" type="submit">Save review</button>
+  </div>
+</form>
+{% endblock %}

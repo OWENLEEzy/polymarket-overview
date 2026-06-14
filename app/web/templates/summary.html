@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero" style="text-align:left;padding:18px 0 6px">
+  <span class="eyebrow">◆ Synthesis</span>
+  <h1 class="display" style="font-size:clamp(30px,4vw,44px);margin-top:18px">Market overview</h1>
+  <p class="run-meta" style="margin-top:14px">RUN <code>{{ search_run_id }}</code></p>
+</div>
+
+<div class="narrative-block">
+  <div class="tag">● AI narrative</div>
+  <div id="narrative" class="body loading">Synthesizing point estimates…</div>
+</div>
+
+<h2 class="section-title">Point estimates</h2>
+<div id="estimates" class="estimates"></div>
+
+<div class="toolbar" style="margin-top:28px">
+  <a class="chip-link" href="/">↺ New search</a>
+</div>
+
+<script>window.SEARCH_RUN_ID = "{{ search_run_id }}";</script>
+<script src="/static/app.js"></script>
+{% endblock %}

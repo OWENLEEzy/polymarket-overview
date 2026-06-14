@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <span class="eyebrow">● Live Polymarket data</span>
+  <h1 class="display">Collapse the<br>market into one<br>number.</h1>
+  <p class="read">
+    Search any topic. We pull the live prediction markets, structure every
+    question, and synthesize each data object into a single point estimate
+    plus one plain-language sentence.
+  </p>
+
+  <form class="search-form" method="post" action="/search">
+    <label for="topic" style="position:absolute;left:-9999px">Topic</label>
+    <input id="topic" name="topic" type="text" value="Anthropic IPO" aria-label="Topic" required>
+    <button class="btn btn-primary" type="submit">Run search →</button>
+  </form>
+
+  <div class="examples">
+    <button type="button" class="example" data-topic="Anthropic IPO">Anthropic IPO</button>
+    <button type="button" class="example" data-topic="Bitcoin price 2025">Bitcoin price 2025</button>
+    <button type="button" class="example" data-topic="US election">US election</button>
+    <button type="button" class="example" data-topic="Fed rate cut">Fed rate cut</button>
+  </div>
+</section>
+
+<div class="feature-row">
+  <div class="feature f-teal">
+    <div class="k">Numeric</div>
+    <div class="v">Lognormal EV from the threshold curve</div>
+  </div>
+  <div class="feature f-blue">
+    <div class="k">Boolean</div>
+    <div class="v">Median yes-probability across markets</div>
+  </div>
+  <div class="feature f-lilac">
+    <div class="k">Time</div>
+    <div class="v">Median resolution date</div>
+  </div>
+  <div class="feature f-coral">
+    <div class="k">Context</div>
+    <div class="v">Arg-max categorical outcome</div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll(".example").forEach((b) =>
+    b.addEventListener("click", () => { document.getElementById("topic").value = b.dataset.topic; })
+  );
+</script>
+{% endblock %}

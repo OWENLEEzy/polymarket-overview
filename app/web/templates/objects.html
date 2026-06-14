@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero" style="text-align:left;padding:18px 0 6px">
+  <span class="eyebrow">Run complete</span>
+  <h1 class="display" style="font-size:clamp(30px,4vw,44px);margin-top:18px">{{ topic }}</h1>
+  <p class="run-meta" style="margin-top:14px">RUN <code>{{ run.search_run_id }}</code> · {{ objects|length }} objects · {{ markets|length }} markets</p>
+</div>
+
+<div class="toolbar">
+  <a class="chip-link is-teal" href="/summary/{{ run.search_run_id }}">◆ Generate overview</a>
+  <a class="chip-link" href="/review/{{ run.search_run_id }}">✎ Review structured markets</a>
+  <a class="chip-link" href="/">↺ New search</a>
+</div>
+
+<h2 class="section-title">Data objects</h2>
+<div class="window">
+  <div class="window-chrome">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span>objects · {{ objects|length }}</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Object</th><th>Type</th><th class="num">Markets</th><th class="num">Confidence</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for object in objects %}
+      <tr>
+        <td><strong>{{ object.object_name }}</strong></td>
+        <td>{{ object.object_type }}</td>
+        <td class="num">{{ object.market_ids|length }}</td>
+        <td class="num">{{ "%.2f"|format(object.confidence) }}</td>
+        <td>
+          <form method="post" action="/overview">
+            <input type="hidden" name="search_run_id" value="{{ run.search_run_id }}">
+            <input type="hidden" name="object_id" value="{{ object.object_id or object.object_name }}">
+            <button class="btn btn-sm" type="submit">Aggregate</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="section-title">Structured markets</h2>
+<div class="window">
+  <div class="window-chrome">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="live-badge">● {{ markets|length }} markets</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>On</th><th>Object</th><th>Question</th><th>Operator</th><th>Threshold</th><th class="num">Prob.</th></tr>
+    </thead>
+    <tbody>
+      {% for market in markets %}
+      <tr>
+        <td>{{ "✓" if market.include else "·" }}</td>
+        <td>{{ market.object_name }}</td>
+        <td>{{ market.question }}</td>
+        <td>{{ market.operator }}</td>
+        <td class="num">{{ market.threshold_value or "" }} {{ market.threshold_unit or "" }}</td>
+        <td class="num">{{ "%.3f"|format(market.probability) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
