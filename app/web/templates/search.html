@@ -4,22 +4,29 @@
   <span class="eyebrow">● Live Polymarket data</span>
   <h1 class="display">Collapse the<br>market into one<br>number.</h1>
   <p class="read">
-    Search any topic. We pull the live prediction markets, structure every
-    question, and synthesize each data object into a single point estimate
-    plus one plain-language sentence.
+    Aim at <strong>one specific quantity</strong> — a valuation, a count, a
+    price, a date — not a whole field. We pull the live prediction markets,
+    structure every question, and synthesize a single point estimate plus one
+    plain-language sentence.
   </p>
 
   <form class="search-form" method="post" action="/search">
     <label for="topic" style="position:absolute;left:-9999px">Topic</label>
-    <input id="topic" name="topic" type="text" value="Anthropic IPO" aria-label="Topic" required>
+    <input id="topic" name="topic" type="text" value="Fed rate cuts in 2026"
+           placeholder="e.g. Anthropic valuation 2026" aria-label="Topic" required>
     <button class="btn btn-primary" type="submit">Run search →</button>
   </form>
 
+  <p class="search-hint">
+    <span class="hint-ok">Sharp →</span> Anthropic valuation 2026 · Fed rate cuts in 2026
+    &nbsp;&nbsp;<span class="hint-bad">Too broad →</span> US election · crypto
+  </p>
+
   <div class="examples">
-    <button type="button" class="example" data-topic="Anthropic IPO">Anthropic IPO</button>
-    <button type="button" class="example" data-topic="Bitcoin price 2025">Bitcoin price 2025</button>
-    <button type="button" class="example" data-topic="US election">US election</button>
-    <button type="button" class="example" data-topic="Fed rate cut">Fed rate cut</button>
+    <button type="button" class="example" data-topic="Anthropic valuation 2026">Anthropic valuation 2026</button>
+    <button type="button" class="example" data-topic="Bitcoin price end of 2026">Bitcoin price end of 2026</button>
+    <button type="button" class="example" data-topic="Fed rate cuts in 2026">Fed rate cuts in 2026</button>
+    <button type="button" class="example" data-topic="2028 GOP presidential nominee">2028 GOP nominee</button>
   </div>
 </section>
 

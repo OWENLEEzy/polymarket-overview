@@ -41,55 +41,67 @@
 </div>
 
 <h2 class="section-title">Edit &amp; save</h2>
+<p class="read" style="font-size:15px;max-width:680px">
+  One card per market. Rename <strong>Object</strong> to regroup markets, change
+  <strong>Type</strong> to reclassify, fix the <strong>Threshold</strong>, or
+  untick to drop a market. Probability is the market price and stays read-only.
+</p>
+
 <form method="post" action="/review/{{ search_run_id }}">
-  <div class="window">
-    <div class="window-chrome">
-      <span class="dots"><i></i><i></i><i></i></span>
-      <span>{{ markets|length }} rows · editable</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>On</th><th>Object</th><th>Type</th><th>Question</th>
-          <th>Operator</th><th>Threshold</th><th>Category</th><th class="num">Prob.</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for market in markets %}
-        <tr>
-          <td><input type="checkbox" name="include_{{ loop.index0 }}" {% if market.include %}checked{% endif %}></td>
-          <td>
-            <input name="object_name_{{ loop.index0 }}" value="{{ market.object_name }}" style="width:140px">
-            <input type="hidden" name="event_title_{{ loop.index0 }}" value="{{ market.event_title }}">
-            <input type="hidden" name="resolution_date_{{ loop.index0 }}" value="{{ market.resolution_date or '' }}">
-          </td>
-          <td>
-            <select name="object_type_{{ loop.index0 }}">
-              {% for object_type in object_types %}
-              <option value="{{ object_type }}" {% if market.object_type == object_type %}selected{% endif %}>{{ object_type }}</option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>{{ market.question }}</td>
-          <td>
-            <select name="operator_{{ loop.index0 }}">
-              {% for operator in operators %}
-              <option value="{{ operator }}" {% if market.operator == operator %}selected{% endif %}>{{ operator }}</option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>
-            <input class="narrow" name="threshold_value_{{ loop.index0 }}" value="{{ market.threshold_value if market.threshold_value is not none else '' }}">
-            <input class="unit" name="threshold_unit_{{ loop.index0 }}" value="{{ market.threshold_unit or '' }}">
-          </td>
-          <td><input name="category_value_{{ loop.index0 }}" value="{{ market.category_value or '' }}" style="width:120px"></td>
-          <td class="num">{{ "%.3f"|format(market.probability) }} <span class="muted">{{ market.probability_source }}</span></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="editor">
+    {% for market in markets %}
+    <article class="ed-card t-{{ market.object_type }} {{ 'is-off' if not market.include }}">
+      <header class="ed-head">
+        <label class="ed-toggle">
+          <input type="checkbox" name="include_{{ loop.index0 }}" {% if market.include %}checked{% endif %}>
+          <span>Include</span>
+        </label>
+        <span class="ed-prob num">{{ "%.3f"|format(market.probability) }}<span class="muted"> {{ market.probability_source }}</span></span>
+      </header>
+
+      <p class="ed-q">{{ market.question }}</p>
+
+      <div class="ed-grid">
+        <div class="ed-field ed-span2">
+          <label>Object</label>
+          <input name="object_name_{{ loop.index0 }}" value="{{ market.object_name }}">
+          <input type="hidden" name="event_title_{{ loop.index0 }}" value="{{ market.event_title }}">
+          <input type="hidden" name="resolution_date_{{ loop.index0 }}" value="{{ market.resolution_date or '' }}">
+        </div>
+        <div class="ed-field">
+          <label>Type</label>
+          <select name="object_type_{{ loop.index0 }}">
+            {% for object_type in object_types %}
+            <option value="{{ object_type }}" {% if market.object_type == object_type %}selected{% endif %}>{{ object_type }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="ed-field">
+          <label>Operator</label>
+          <select name="operator_{{ loop.index0 }}">
+            {% for operator in operators %}
+            <option value="{{ operator }}" {% if market.operator == operator %}selected{% endif %}>{{ operator }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="ed-field">
+          <label>Threshold</label>
+          <div class="ed-inline">
+            <input class="narrow" name="threshold_value_{{ loop.index0 }}" value="{{ market.threshold_value if market.threshold_value is not none else '' }}" placeholder="value">
+            <input class="unit" name="threshold_unit_{{ loop.index0 }}" value="{{ market.threshold_unit or '' }}" placeholder="unit">
+          </div>
+        </div>
+        <div class="ed-field ed-span2">
+          <label>Category</label>
+          <input name="category_value_{{ loop.index0 }}" value="{{ market.category_value or '' }}">
+        </div>
+      </div>
+    </article>
+    {% endfor %}
   </div>
-  <div class="toolbar" style="margin-top:18px">
+
+  <div class="save-bar">
+    <span class="save-bar-meta">{{ markets|length }} markets</span>
     <button class="btn btn-primary" type="submit">Save review</button>
   </div>
 </form>
