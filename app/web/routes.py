@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import APIRouter, Form, HTTPException, Request
 from starlette.responses import RedirectResponse
 from starlette.responses import Response
@@ -18,10 +20,24 @@ from app.storage.db import connect, migrate
 from app.storage.repositories import StructuredMarketRepository
 
 
+_STATIC_DIR = Path(__file__).parent / "static"
+
+
+def _asset_version() -> str:
+    try:
+        return str(int((_STATIC_DIR / "app.css").stat().st_mtime))
+    except OSError:
+        return "1"
+
+
 router = APIRouter()
 templates = Jinja2Templates(directory="app/web/templates")
 # Expose the repository link to every template; the nav renders it only when set.
 templates.env.globals["github_url"] = get_settings().github_url
+# Cache-bust the stylesheet by its file mtime so a CSS change reaches users on
+# the next load instead of being masked by Chrome's disk cache (computed once at
+# import; the server restarts on deploy).
+templates.env.globals["asset_version"] = _asset_version()
 
 
 @router.get("/")
